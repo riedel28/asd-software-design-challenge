@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div style="display: flex; gap: 10px; max-width: 300px; margin: 0 auto">
+      <input type="text" id="input" />
+      <button id="undo">Undo</button>
+      <button id="redo">Redo</button>
+    </div>
+        <div style="display: flex; flex-direction: column; gap: 10px; max-width: 300px; margin: 0 auto">
+      <h2>Undo:</h2>
+      <div id="undoOutput"></div>
+      <h2>Redo:</h2>
+      <div id="redoOutput"></div>
+    </div>
+    <script src="undo-redo.js"></script>
+  </body>
+</html>

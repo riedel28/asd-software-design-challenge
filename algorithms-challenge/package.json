@@ -1,0 +1,16 @@
+{
+	"name": "algorithms-challenge",
+	"version": "1.0.0",
+	"description": "",
+	"main": "undo-redo.js",
+	"scripts": {
+		"dev": "tsc --watch"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "commonjs",
+	"devDependencies": {
+		"typescript": "^5.8.3"
+	}
+}
