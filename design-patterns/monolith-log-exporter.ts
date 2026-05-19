@@ -19,7 +19,7 @@ interface LogRepository {
 	getLogs(): Promise<Log[]>;
 }
 
-class PostresLogRepository implements LogRepository {
+class MongoLogRepository implements LogRepository {
 	private readonly db: ReturnType<typeof getMockDB>;
 
 	constructor(db: ReturnType<typeof getMockDB>) {
@@ -63,11 +63,11 @@ class ExporterFactory {
 }
 
 class LogExporter {
-	private readonly logRepository: PostresLogRepository;
+	private readonly logRepository: MongoLogRepository;
 	private readonly exporterFactory: ExporterFactory;
 
 	constructor(
-		logRepository: PostresLogRepository,
+		logRepository: MongoLogRepository,
 		exporterFactory: ExporterFactory,
 	) {
 		this.logRepository = logRepository;
@@ -83,5 +83,5 @@ class LogExporter {
 }
 
 console.log(
-	new LogExporter(new PostresLogRepository(getMockDB()), new ExporterFactory()),
+	new LogExporter(new MongoLogRepository(getMockDB()), new ExporterFactory()),
 );
