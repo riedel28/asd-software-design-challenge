@@ -78,10 +78,15 @@ class LogExporter {
 		const logs = await this.logRepository.getLogs();
 		const exporter = this.exporterFactory.createExporter(format);
 
-		exporter.export(logs);
+		return exporter.export(logs);
 	}
 }
 
-console.log(
-	new LogExporter(new MongoLogRepository(getMockDB()), new ExporterFactory()),
+const exporter = new LogExporter(
+	new MongoLogRepository(getMockDB()),
+	new ExporterFactory(),
 );
+
+exporter.exportLogs("json").then(console.log);
+exporter.exportLogs("csv").then(console.log);
+exporter.exportLogs("xml").then(console.log);
