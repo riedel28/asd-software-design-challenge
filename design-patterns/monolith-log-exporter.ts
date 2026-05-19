@@ -1,0 +1,77 @@
+function getMockDB() {
+	return {
+		query(select: string): Log[] {
+			return [
+				{
+					message: "Message",
+					timestamp: "123",
+					level: "123",
+				},
+			];
+		},
+	};
+}
+
+type Format = "json" | "csv" | "xml";
+type Log = { timestamp: string; message: string; level: string };
+
+interface LogRepository {
+	getLogs(): Promise<Log[]>;
+}
+
+class PostresLogRepository implements LogRepository {
+	constructor(private readonly db: ReturnType<typeof getMockDB>) {}
+
+	async getLogs(): Promise<Log[]> {
+		const logs = await this.db.query("SELECT * FROM system_logs");
+		return logs;
+	}
+}
+
+class JSONExporter {
+	export(logs: Log[]) {
+		return JSON.stringify(logs);
+	}
+}
+class CSVExporter {
+	export(logs: Log[]) {
+		return logs.map((l) => `${l.timestamp},${l.level},${l.message}`).join("\n");
+	}
+}
+class XMLExporter {
+	export(logs: Log[]) {
+		return `<logs>${logs.map((l) => `<log>${l.message}</log>`).join("")}</logs>`;
+	}
+}
+
+class ExporterFactory {
+	createExporter(format: Format) {
+		if (format === "json") {
+			return new JSONExporter();
+		} else if (format === "csv") {
+			return new CSVExporter();
+		} else if (format === "xml") {
+			return new XMLExporter();
+		} else {
+			throw new Error("Unknown format");
+		}
+	}
+}
+
+class LogExporter {
+	constructor(
+		private readonly logRepository: PostresLogRepository,
+		private readonly exporterFactory: ExporterFactory,
+	) {}
+
+	async exportLogs(format: Format) {
+		const logs = await this.logRepository.getLogs();
+		const exporter = this.exporterFactory.createExporter(format);
+
+		exporter.export(logs);
+	}
+}
+
+console.log(
+	new LogExporter(new PostresLogRepository(getMockDB()), new ExporterFactory()),
+);
