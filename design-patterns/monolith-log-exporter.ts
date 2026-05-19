@@ -20,7 +20,11 @@ interface LogRepository {
 }
 
 class PostresLogRepository implements LogRepository {
-	constructor(private readonly db: ReturnType<typeof getMockDB>) {}
+	private readonly db: ReturnType<typeof getMockDB>;
+
+	constructor(db: ReturnType<typeof getMockDB>) {
+		this.db = db;
+	}
 
 	async getLogs(): Promise<Log[]> {
 		const logs = await this.db.query("SELECT * FROM system_logs");
@@ -59,10 +63,16 @@ class ExporterFactory {
 }
 
 class LogExporter {
+	private readonly logRepository: PostresLogRepository;
+	private readonly exporterFactory: ExporterFactory;
+
 	constructor(
-		private readonly logRepository: PostresLogRepository,
-		private readonly exporterFactory: ExporterFactory,
-	) {}
+		logRepository: PostresLogRepository,
+		exporterFactory: ExporterFactory,
+	) {
+		this.logRepository = logRepository;
+		this.exporterFactory = exporterFactory;
+	}
 
 	async exportLogs(format: Format) {
 		const logs = await this.logRepository.getLogs();
